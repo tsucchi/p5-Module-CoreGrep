@@ -1,0 +1,28 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use Module::CoreGrep;
+use version;
+use Getopt::Long qw(:config posix_default no_ignore_case gnu_compat);
+
+GetOptions(
+    "invert-match|v" => \my $invert_match,
+    "perl-version=s" => \my $perl_version,
+);
+
+$perl_version = $] if ( !defined $perl_version );
+my $numified_perl_version = version->new($perl_version)->numify;
+my $app = Module::CoreGrep->new( perl_version => $numified_perl_version);
+
+my @modules = <>;
+chomp(@modules);
+
+if( !$invert_match ) {
+    print join "\n", $app->coregrep(@modules);
+}
+else {
+    print join "\n", $app->coregrep_v(@modules);
+}
+
+print "\n";
